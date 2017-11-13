@@ -324,7 +324,7 @@ public class GraphiteReporter extends AbstractPollingReporter implements MetricP
             this.prefix = "ymetrics2.";
         }
 
-        if (suffix != null) {
+        if (suffix != null && !suffix.equals("")) {
             this.suffix = "." + suffix;
         } else {
             this.suffix = "";
@@ -354,7 +354,7 @@ public class GraphiteReporter extends AbstractPollingReporter implements MetricP
 
             // we only need one machine in a given cluster to report lag metrics
             if (IS_LEADER) {
-                printConsumerLagMetrics(epoch);
+                printConsumerLagMetrics(epoch, logDebugToStdOut);
             }
 
             writer.flush();
@@ -391,7 +391,7 @@ public class GraphiteReporter extends AbstractPollingReporter implements MetricP
     }
 
     @SuppressWarnings("unchecked")
-    private void printConsumerLagMetrics(final long epoch) {
+    private void printConsumerLagMetrics(final long epoch, boolean logDebugToStdOut) {
 
         try {
 
@@ -468,8 +468,10 @@ public class GraphiteReporter extends AbstractPollingReporter implements MetricP
                                             totalLagPerTopic = totalLagPerTopic + (lastOffset - offset);
                                         }
                                         String reportableConsumerGroup = parseTopicFromConsumerGroup(consumerGroup, topic);
-                                        System.out.println("LAG: kafka.consumer.topic_lag." + dc + "." + topic + "."
-                                                + reportableConsumerGroup + " partition-" + pid + ": " + totalLagPerTopic);
+                                        if (logDebugToStdOut) {
+                                            System.out.println("LAG: kafka.consumer.topic_lag." + dc + "." + topic + "."
+                                                    + reportableConsumerGroup + " partition-" + pid + ": " + totalLagPerTopic);
+                                        }
                                         sendLagInt(epoch, "kafka.consumer.topic_lag." + dc + "." + topic + "."
                                                 + reportableConsumerGroup, "partition-" + pid, totalLagPerTopic);
                                     }

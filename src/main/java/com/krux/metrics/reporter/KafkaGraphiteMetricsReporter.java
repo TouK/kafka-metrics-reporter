@@ -71,6 +71,7 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter, Kafka
             graphitePort = props.getInt("kafka.graphite.metrics.port", GRAPHITE_DEFAULT_PORT);
             graphiteGroupPrefix = props.getString("kafka.graphite.metrics.env", GRAPHITE_DEFAULT_PREFIX);
             hostMatch = props.getString("kafka.broker.stats.sender", "");
+            boolean useHostnameAsMetricSuffix = props.getBoolean("kafka.graphite.metrics.useHostnameAsMetricsSuffix", false);
             System.setProperty("kafka.broker.stats.sender", hostMatch);
             
             System.setProperty("kafka.graphite.metrics.log.debug",
@@ -78,15 +79,17 @@ public class KafkaGraphiteMetricsReporter implements KafkaMetricsReporter, Kafka
             System.setProperty("zookeeper.connect", props.getString("zookeeper.connect", "localhost:2181"));
             System.setProperty("kafka.http.status.port", props.getString("kafka.http.status.port", "6091"));
             System.setProperty("kafka.http.status.port", props.getString("kafka.http.status.port", "6091"));
-            
-            try {
-                graphiteSuffix = InetAddress.getLocalHost().getHostName().toLowerCase();
-                if (graphiteSuffix.contains(".")) {
-                    String[] parts = graphiteSuffix.split("\\.");
-                    graphiteSuffix = parts[0];
+
+            if (useHostnameAsMetricSuffix) {
+                try {
+                    graphiteSuffix = InetAddress.getLocalHost().getHostName().toLowerCase();
+                    if (graphiteSuffix.contains(".")) {
+                        String[] parts = graphiteSuffix.split("\\.");
+                        graphiteSuffix = parts[0];
+                    }
+                } catch (UnknownHostException e1) {
+                    LOG.error(e1);
                 }
-            } catch (UnknownHostException e1) {
-                LOG.error(e1);
             }
             String regex = props.getString("kafka.graphite.metrics.exclude.regex", null);
 
