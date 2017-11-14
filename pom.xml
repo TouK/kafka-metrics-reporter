@@ -2,13 +2,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.krux</groupId>
 	<artifactId>kafka-metrics-reporter</artifactId>
-	<version>1.1.4-touk-3-SNAPSHOT</version>
+	<version>1.1.4-touk-3</version>
 
     <scm>
          <connection>scm:git:git@github.com:TouK/kafka-metrics-reporter.git</connection>
          <developerConnection>scm:git:git@github.com:TouK/kafka-metrics-reporter.git</developerConnection>
          <url>scm:git:git@github.com:TouK/kafka-metrics-reporter.git</url>
-         <tag>kafka-metrics-reporter-1.1.4-touk-1</tag>
+         <tag>kafka-metrics-reporter-1.1.4-touk-3</tag>
     </scm>
 
      <distributionManagement>
